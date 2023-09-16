@@ -42,6 +42,14 @@ public class MenuActivity extends AppCompatActivity {
             Intent intent = new Intent(MenuActivity.this, CronometroActivity.class);
             startActivity(intent);
         });
+
+
+        binding.buttonContador.setOnClickListener(view -> {
+            Intent intent = new Intent(MenuActivity.this, ContadorActivity.class);
+            startActivity(intent);
+        });
+
+
     }
 
 }
