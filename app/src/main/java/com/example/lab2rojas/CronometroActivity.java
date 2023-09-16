@@ -10,21 +10,29 @@ import android.widget.Button;
 import android.widget.TextView;
 import java.util.Locale;
 import com.example.lab2rojas.databinding.ActivityCronometroBinding;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import com.example.lab2rojas.databinding.ActivityMenuBinding;
 
 public class CronometroActivity extends AppCompatActivity {
 
     ActivityCronometroBinding binding;
     private boolean isRunning = false;
-    private long elapsedTime = 0;
-    private long startTime = 0;
+    private long elapsedTime;
+    private long startTime;
+    private SharedPreferences preferences;
+
     private TextView textViewCounter;
     private Button buttonStart, buttonPause, buttonResume, buttonClear;
     private final Handler handler = new Handler();
     private TimerThread timerThread;
+    private int milliseconds = 0;
+
+
 
 
     @Override
+    //TODO: El cronómetro funciona cuando sales de aplicación, sin embargo, si es que regresas a menú activity, el cronometro se guardará solo si se ha pausado
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityCronometroBinding.inflate(getLayoutInflater());
@@ -60,7 +68,9 @@ public class CronometroActivity extends AppCompatActivity {
             }
         }
 
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        elapsedTime = preferences.getLong("elapsedTime", 0);
+        startTime = preferences.getLong("startTime", 0);
 
     }
 
@@ -87,6 +97,12 @@ public class CronometroActivity extends AppCompatActivity {
             buttonPause.setEnabled(true);
             buttonResume.setEnabled(false);
             buttonClear.setEnabled(false);
+
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong("elapsedTime", elapsedTime);
+            editor.putLong("startTime", startTime);
+            editor.apply();
         }
     }
 
@@ -101,6 +117,14 @@ public class CronometroActivity extends AppCompatActivity {
             elapsedTime = SystemClock.elapsedRealtime() - startTime;
 
             timerThread.interrupt();
+
+
+
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong("elapsedTime", elapsedTime);
+            editor.putLong("startTime", startTime);
+            editor.apply();
         }
     }
 
@@ -123,7 +147,8 @@ public class CronometroActivity extends AppCompatActivity {
         isRunning = false;
         elapsedTime = 0;
         startTime = SystemClock.elapsedRealtime();
-        textViewCounter.setText("00:00");
+        milliseconds = 0;
+        textViewCounter.setText("00:00.0");
         buttonStart.setEnabled(true);
         buttonPause.setEnabled(false);
         buttonResume.setEnabled(false);
@@ -132,6 +157,12 @@ public class CronometroActivity extends AppCompatActivity {
         if (timerThread != null && timerThread.isAlive()) {
             timerThread.interrupt();
         }
+
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong("elapsedTime", elapsedTime);
+        editor.putLong("startTime", startTime);
+        editor.apply();
     }
 
 
@@ -141,9 +172,11 @@ public class CronometroActivity extends AppCompatActivity {
             while (isRunning) {
                 long currentTime = SystemClock.elapsedRealtime();
                 long elapsedTime = currentTime - startTime;
-                final int seconds = (int) (elapsedTime / 1000);
-                final int minutes = seconds / 60;
-                final String time = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds % 60);
+                milliseconds = (int) (elapsedTime / 100) % 10;
+                elapsedTime /= 1000; // Convierte a segundos
+                final int seconds = (int) (elapsedTime % 60);
+                final int minutes = (int) (elapsedTime / 60);
+                final String time = String.format(Locale.getDefault(), "%02d:%02d.%01d", minutes, seconds, milliseconds);
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -153,7 +186,7 @@ public class CronometroActivity extends AppCompatActivity {
                 });
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     return;
                 }
