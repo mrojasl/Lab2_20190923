@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.lab2rojas.databinding.ActivityMainBinding;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         binding.btnSignUp.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
             startActivity(intent);
+            Toast.makeText(MainActivity.this, "Sign Up", Toast.LENGTH_SHORT).show();
         });
     }
 }

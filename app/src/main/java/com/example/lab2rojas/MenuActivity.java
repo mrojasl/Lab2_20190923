@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lab2rojas.databinding.ActivityMenuBinding;
@@ -41,12 +42,14 @@ public class MenuActivity extends AppCompatActivity {
         binding.buttonCronometro.setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, CronometroActivity.class);
             startActivity(intent);
+            Toast.makeText(MenuActivity.this, "Cronómetro", Toast.LENGTH_SHORT).show();
         });
 
 
         binding.buttonContador.setOnClickListener(view -> {
             Intent intent = new Intent(MenuActivity.this, ContadorActivity.class);
             startActivity(intent);
+            Toast.makeText(MenuActivity.this, "Contador", Toast.LENGTH_SHORT).show();
         });
 
 

@@ -100,6 +100,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (validarEspacios()) {
                             Intent intent = new Intent(SignUpActivity.this, MenuActivity.class);
                             intent.putExtra("profileImageUrl", imageUrl);
+                            Toast.makeText(SignUpActivity.this, "Menú", Toast.LENGTH_SHORT).show();
                             startActivity(intent);
                         } else {
                             Toast.makeText(SignUpActivity.this, "Por favor, complete todos los campos y marque la casilla de acuerdo.", Toast.LENGTH_SHORT).show();
